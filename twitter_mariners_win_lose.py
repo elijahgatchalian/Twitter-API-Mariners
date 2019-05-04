@@ -38,7 +38,8 @@ def update_text_file():
     sys.exit() #close everything
 
 
-#    Authenticating keys from twitterKeys
+#    Authenticating keys from twitterKeys. I did not include this file.
+#    Keys can be generated at developer.twitter.com
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_KEY_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_KEY_SECRET)
 api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
