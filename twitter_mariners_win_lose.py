@@ -13,12 +13,14 @@ FILENAME = "seattleMariners.txt"
 ###    FUNCTIONS   ###
 def mariners_won(event):
     global wins
+    wins = int(wins)
     wins += 1
     wins = str(wins)
     post_tweet_to_thread()
     
 def mariners_lost(event):
     global loses
+    loses = int(loses)
     loses += 1
     loses = str(loses)
     post_tweet_to_thread()
@@ -52,8 +54,8 @@ window.geometry("250x190")
 #    Retrieving previous tweet's information
 information = open(FILENAME).readlines()
 tweet_id = information[0].rstrip()
-wins = int(information[1].rstrip())
-loses = int(information[2])
+wins = information[1].rstrip()
+loses = information[2]
 
 #    Adding label on window (W-L)
 label = tk.Label(window, text = str(wins) + '-' + str(loses))
