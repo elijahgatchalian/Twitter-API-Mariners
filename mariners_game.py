@@ -1,3 +1,6 @@
+#   Eli Gatchalian
+#   May 6, 2019
+
 import sys
 import statsapi
 from post_mariners_tweet import post_tweet
