@@ -32,14 +32,15 @@ def post_tweet(wins, losses):
     tweet_id = open(FILENAME).read()
     api = authenticate_keys()
     screen_name = api.me()['screen_name']
+    url = 'https://twitter.com/' + screen_name + '/status/'
     
     if(check_previous_tweet(wins,losses,tweet_id,api)):
         new_tweet = api.update_status('@' + screen_name + ' ' + str(wins) + '-' + str(losses), tweet_id)
         tweet_id = new_tweet['id_str'] #Set tweet_id to newest tweet's id
         write_to_file(tweet_id)
         results = 'Tweet successfully posted.'
+        open_new_tab(url + tweet_id)
     else:
-        results = 'This game was already tweeted.'
+        results = 'This game was already tweeted.\n' + url + tweet_id
         
-    open_new_tab("https://twitter.com/" + screen_name + "/status/" + tweet_id)
     return results
