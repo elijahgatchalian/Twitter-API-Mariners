@@ -1,7 +1,6 @@
 #   Eli Gatchalian
 #   May 4, 2019
 
-import sys
 import tweepy
 from twitterKeys import CONSUMER_KEY, CONSUMER_KEY_SECRET, ACCESS_KEY, ACCESS_KEY_SECRET
 from webbrowser import open_new_tab
