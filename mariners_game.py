@@ -26,5 +26,6 @@ if(game_day['status'] == 'Final'):
     else:
         record = team_info['home']['record']['leagueRecord']
     
-    post_tweet(record['wins'],record['losses'])
+    results = post_tweet(record['wins'],record['losses'])
+    print(results)
     
