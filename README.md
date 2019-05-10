@@ -16,3 +16,6 @@ linescore of the game.
 # post_mariners_tweet.py 
 If the game has been completed, game_status_methods.py calls this and attempts to post a tweet if a  
 tweet has not already been posted for this game.
+
+# seattleMariners.txt
+A one-lined text file that contains the most recent tweet ID of the running thread.
