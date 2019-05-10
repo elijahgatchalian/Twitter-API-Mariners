@@ -2,7 +2,7 @@
 #   May 6, 2019
 
 import statsapi
-import game_status_methods as gsm
+from game_status_methods import status_to_method
 from datetime import datetime
 
 #   Display all of the team's games today
@@ -13,9 +13,9 @@ if(bool(game_day)):
     print()
     for game in range(len(game_day)): #Handling Doubleheader days
         game_info = statsapi.get('game', {'gamePk':game_day[game]['game_id'], 'teamId':136})
-        run_method = gsm.status_to_method.get(game_day[game]['status'])
+        run_method = status_to_method.get(game_day[game]['status'])
         if(str(run_method) == 'None'):
-            run_method = gsm.status_to_method.get('Unknown')
+            run_method = status_to_method.get('Unknown')
             run_method(game_day[game]['status'])
         else:
             run_method(game_info)
