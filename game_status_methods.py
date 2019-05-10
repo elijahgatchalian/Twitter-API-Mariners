@@ -12,7 +12,7 @@ def after_game(game_info):
     else:
         record = team_info['home']['record']['leagueRecord']
     
-    #print(post_tweet(record['wins'], record['losses']))
+    print(post_tweet(record['wins'], record['losses']))
 
 #   Game has not started yet
 def before_game(game_info):
