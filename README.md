@@ -6,7 +6,9 @@ to the loss column. This 2019 season I changed it up with a thread that started 
 
 For this project I used Twitter's API via tweepy and MLB's API via statsapi. Documentations for both tweepy and statsapi modules: http://docs.tweepy.org/en/latest/ and https://toddrob99.github.io/MLB-StatsAPI/
 
-Here are the steps my program takes:
-  1. Check that there is a game today using statsapi.
-  2. If there is no game, print out there is no game and exit program immediately. Otherwise, display the game's linescore.
-  3. If today's game is over, get the team's current record and post the record to my twitter account using tweepy.
+mariners_game.py: Retrieves all of the team's games today and passes the current status of the game to game_status_methods.py.
+
+game_status_methods.py: Displays different game information depending on the status of the game.
+
+post_mariners_tweet.py: If the game has been completed, game_status_methods.py calls this and attempts to post a tweet if a  
+tweet has not already been posted for this game.
