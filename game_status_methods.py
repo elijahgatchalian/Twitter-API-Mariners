@@ -56,6 +56,7 @@ status_to_method = {
 'Game Over': after_game,
 'Scheduled': before_game,
 'Pre-Game': before_game,
+'Warmup': before_game,
 'In Progress': game_in_progress,
 'Postponed': game_postponed,
 'Unknown': figure_out_status
