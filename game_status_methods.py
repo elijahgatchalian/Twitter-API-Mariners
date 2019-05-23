@@ -1,9 +1,7 @@
 #   Eli Gatchalian
 #   May 10, 2019
 
-from post_mariners_tweet import post_tweet
-
-#   Game has completed, attempt to post tweet
+#   Game has completed. Attempt to post tweet and display next game info
 def after_game(game_info):
     team_info = game_info['gameData']['teams']
     
@@ -12,7 +10,9 @@ def after_game(game_info):
     else:
         record = team_info['home']['record']['leagueRecord']
     
-    print(post_tweet(record['wins'], record['losses']))
+    from post_mariners_tweet import post_tweet
+    post_tweet(record['wins'], record['losses'])
+    get_next_game()
 
 #   Game has not started yet
 def before_game(game_info):
@@ -41,6 +41,12 @@ def game_in_progress(game_info):
 def game_postponed(game_info):
     print('This game has been postponed.')
 
+#   No game today. Display the date of the next game
+def no_game():
+    print('There is no game today.\n')
+    get_next_game()
+    print()
+    
 #   Game has been either delayed for any number of reasons, or something else
 def figure_out_status(game_status):
     game_status = game_status.replace(':','').split(' ')
@@ -59,6 +65,25 @@ status_to_method = {
 'Warmup': before_game,
 'In Progress': game_in_progress,
 'Postponed': game_postponed,
+'No Game Today': no_game,
 'Unknown': figure_out_status
 }  
   
+#   Display the date of the team's next game
+def get_next_game():
+    from statsapi import get, next_game, schedule
+    from datetime import datetime
+    next_date = get('game', {'gamePk': str(next_game(136))})['gameData']['datetime']['originalDate']
+    next_date = datetime.strptime(next_date, '%Y-%m-%d').strftime('%m/%d/%Y')
+    
+    if(next_date == datetime.today().strftime('%m/%d/%Y')):
+        # I believe there is a bug with next_game. It seems if the game is in Game Over
+        # status, the next_game returns that game. It isn't until the game is in
+        # Final status that the next_game actually returns the next game.
+        return
+    
+    print('The next game is on ' + next_date + '.\n') 
+    game_day = schedule(team=136,start_date=next_date)
+    game_info = get('game', {'gamePk':game_day[0]['game_id'], 'teamId':136})
+    before_game(game_info) 
+    
