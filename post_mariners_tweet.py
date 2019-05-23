@@ -2,13 +2,12 @@
 #   May 4, 2019
 
 import tweepy
-from twitterKeys import CONSUMER_KEY, CONSUMER_KEY_SECRET, ACCESS_KEY, ACCESS_KEY_SECRET
-from webbrowser import open_new_tab
 
 FILENAME = "seattleMariners.txt"
 
 #   Authenticate keys from developer.twitter.com
 def authenticate_keys():
+    from twitterKeys import CONSUMER_KEY, CONSUMER_KEY_SECRET, ACCESS_KEY, ACCESS_KEY_SECRET
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_KEY_SECRET)
     auth.set_access_token(ACCESS_KEY, ACCESS_KEY_SECRET)
     return tweepy.API(auth, parser=tweepy.parsers.JSONParser())
@@ -35,6 +34,7 @@ def post_tweet(wins, losses):
     url = 'https://twitter.com/' + screen_name + '/status/'
     
     if(check_previous_tweet(wins,losses,tweet_id,api)):
+        from webbrowser import open_new_tab
         new_tweet = api.update_status('@' + screen_name + ' ' + str(wins) + '-' + str(losses), tweet_id)
         tweet_id = new_tweet['id_str'] #Set tweet_id to newest tweet's id
         write_to_file(tweet_id)
@@ -43,4 +43,4 @@ def post_tweet(wins, losses):
     else:
         results = 'This game was already tweeted.\n' + url + tweet_id
         
-    return results
+    print(results)
