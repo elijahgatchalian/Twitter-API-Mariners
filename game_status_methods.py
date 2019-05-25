@@ -27,7 +27,7 @@ def game_in_progress(game_info):
         pitcher = game_info['liveData']['linescore']['defense']['pitcher']
         batter = game_info['liveData']['linescore']['offense']['batter']
         pitcher_home_away = 'home' if inning_state == 'Top' else 'away'
-        batter_home_away = 'home' if pitcher_home_away == 'away' else 'away'
+        batter_home_away = 'away' if pitcher_home_away == 'home' else 'home'
         print('Pitcher: ' + pitcher['fullName'] + ', ERA: ' + pitcher_era(pitcher_home_away, str(pitcher['id']), game_info['liveData']['boxscore']['teams']))
         print('At bat: ' + batter['fullName'] + ', AVG: ' + batting_avg(batter_home_away, str(batter['id']), game_info['liveData']['boxscore']['teams']))
         print(str(game_info['liveData']['linescore']['balls']) + '-' + str(game_info['liveData']['linescore']['strikes']) + ', ' + str(game_info['liveData']['linescore']['outs']) + ' out(s)')
