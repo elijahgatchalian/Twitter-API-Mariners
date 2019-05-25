@@ -3,15 +3,12 @@
 
 #   Game has completed. Attempt to post tweet and display next game info
 def after_game(game_info):
-    team_info = game_info['gameData']['teams']
-    
-    if(team_info['away']['id'] == 136):
-        record = team_info['away']['record']['leagueRecord']
-    else:
-        record = team_info['home']['record']['leagueRecord']
-    
+    home_away = 'home' if game_info['gameData']['teams']['home']['id'] == 136 else 'away'
+    record = game_info['gameData']['teams'][home_away]['record']['leagueRecord']
+        
     from post_mariners_tweet import post_tweet
     post_tweet(record['wins'], record['losses'])
+    
     get_next_game()
 
 #   Game has not started yet
@@ -22,20 +19,18 @@ def before_game(game_info):
 
 #   Game in progress. Display inning, pitcher, and batter info
 def game_in_progress(game_info):
-    live_game = game_info['liveData']['linescore']
-    inning = live_game['currentInningOrdinal']
-    inning_state = live_game['inningState']
+    inning = game_info['liveData']['linescore']['currentInningOrdinal']
+    inning_state = game_info['liveData']['linescore']['inningState']
     print(inning_state + ' of the ' + inning)
     
-    if(inning_state not in ['Middle', 'End']):
-        pitcher = live_game['defense']['pitcher']['fullName']
-        batter = live_game['offense']['batter']['fullName']
-        balls = str(live_game['balls'])
-        strikes = str(live_game['strikes'])
-        outs = str(live_game['outs'])
-        print('Pitcher: ' + pitcher)
-        print('At bat: ' + batter)
-        print(balls + '-' + strikes + ', ' + outs + ' out(s)')
+    if(inning_state in ['Top', 'Bottom']):
+        pitcher = game_info['liveData']['linescore']['defense']['pitcher']
+        batter = game_info['liveData']['linescore']['offense']['batter']
+        pitcher_home_away = 'home' if inning_state == 'Top' else 'away'
+        batter_home_away = 'home' if pitcher_home_away == 'away' else 'away'
+        print('Pitcher: ' + pitcher['fullName'] + ', ERA: ' + pitcher_era(pitcher_home_away, str(pitcher['id']), game_info['liveData']['boxscore']['teams']))
+        print('At bat: ' + batter['fullName'] + ', AVG: ' + batting_avg(batter_home_away, str(batter['id']), game_info['liveData']['boxscore']['teams']))
+        print(str(game_info['liveData']['linescore']['balls']) + '-' + str(game_info['liveData']['linescore']['strikes']) + ', ' + str(game_info['liveData']['linescore']['outs']) + ' out(s)')
 
 #   Game has been postponed for any number of reasons
 def game_postponed(game_info):
@@ -77,13 +72,19 @@ def get_next_game():
     next_date = datetime.strptime(next_date, '%Y-%m-%d').strftime('%m/%d/%Y')
     
     if(next_date == datetime.today().strftime('%m/%d/%Y')):
-        # I believe there is a bug with next_game. It seems if the game is in Game Over
-        # status, the next_game returns that game. It isn't until the game is in
-        # Final status that the next_game actually returns the next game.
+        # Sometimes next_game() returns back date of recent game
         return
     
     print('The next game is on ' + next_date + '.\n') 
     game_day = schedule(team=136,start_date=next_date)
     game_info = get('game', {'gamePk':game_day[0]['game_id'], 'teamId':136})
     before_game(game_info) 
+  
+#   Return pitcher's era
+def pitcher_era(home_away, player_id, game):
+    return game[home_away]['players']['ID' + player_id]['seasonStats']['pitching']['era']
+
+#   Return batter's batting average
+def batting_avg(home_away, player_id, game):
+    return game[home_away]['players']['ID' + player_id]['seasonStats']['batting']['avg']
     
