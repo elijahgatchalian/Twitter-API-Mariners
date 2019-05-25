@@ -17,7 +17,7 @@ def authenticate_keys():
 def check_previous_tweet(wins, losses, tweet_id, api):
     prev_tweet = api.get_status(tweet_id)['text']
     prev_tweet = prev_tweet.replace('-', ' ').split(' ')
-    return prev_tweet[1] != str(wins) and prev_tweet[2] != str(losses)
+    return prev_tweet[1] != str(wins) or prev_tweet[2] != str(losses)
 
 #   Write the new tweet_id to FILENAME
 def write_to_file(tweet_id):
