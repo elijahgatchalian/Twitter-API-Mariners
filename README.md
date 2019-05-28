@@ -24,8 +24,11 @@ A one-lined text file that contains the most recent tweet ID of the running thre
 Shown below is an output of the Mariners game on May 27, 2019
 
 Bottom of the 5th
+
 Pitcher: Lance Lynn, ERA: 4.77, Pitch Count: 85
+
 Batter: Domingo Santana, AVG: .281
+
 2-2, 1 out(s)
 
 Live     1 2 3 4 5 6 7 8 9  R   H   E  
