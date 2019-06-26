@@ -5,24 +5,44 @@ from statsapi import get, linescore, schedule
 from game_status_methods import status_to_method
 from datetime import datetime  
 
-#   Display all of the team's games today
-todays_date = datetime.today().strftime('%m/%d/%Y')
-game_day = statsapi.schedule(team=136,start_date=todays_date)
-
+try:
+    game_day = schedule(team=136,start_date=datetime.today().strftime('%m/%d/%Y'))
+except:
+    print('\nError retrieving today\'s game\n')
+    exit()
+    
 print()
 
-num_games = len(game_day)
-
-if(num_games == 0):
-    status_to_method.get('No Game Today')()
+if(len(game_day) == 0):
+    try:
+        status_to_method.get('No Game Today')()
+    except Exception as e:
+        print('Error with ' + str(status_to_method.get('No Game Today')) + '\n')
+        print(e)
 else:
-    for game in range(num_games): #Handling Doubleheader days
-        game_info = statsapi.get('game', {'gamePk':game_day[game]['game_id'], 'teamId':136})
-        run_method = status_to_method.get(game_day[game]['status'])
+    for game in range(len(game_day)): #Handling Doubleheader days
+        gamePk = game_day[game]['game_id']
         
-        if(str(run_method) == 'None'):
-            status_to_method.get('Unknown')(game_day[game]['status'])
-        else:
+        try: #Getting game's information
+            game_info = get('game', {'gamePk':gamePk, 'teamId':136})
+        except:
+            print('Error retrieving gamePk: ' + gamePk)
+            continue #Continuing to next game in case of doubleheader game
+            
+        #Getting method based on game status
+        run_method = status_to_method.get(game_day[game]['status']) 
+        
+        if(str(run_method) == 'None'): 
+            run_method = status_to_method.get('Unknown')
+            
+        try: #Execute method
             run_method(game_info)
+        except Exception as e:
+            print('Error with ' + str(run_method))
+            print(e)
+            continue #Continuing to next game in case of doubleheader game
         
-        print('\n' + statsapi.linescore(game_info['gamePk']) + '\n') #Display the game's linebox
+        try: #Display the game's linebox
+            print('\n' + linescore(gamePk) + '\n')
+        except:
+            print('Error displaying linescore for gamePk: ' + gamePk)
